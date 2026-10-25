@@ -11,6 +11,40 @@
     });
   });
 
+  // 영상 위 헤더: 스크롤하면 흰 배경으로
+  var hdr = document.querySelector(".site-header.is-overlay");
+  if (hdr) {
+    var onScroll = function () {
+      var past = window.scrollY > window.innerHeight * 0.6;
+      hdr.classList.toggle("scrolled", past);
+      document.body.classList.toggle("at-hero", !past); // PC: 첫 화면에서는 퀵메뉴 대신 헤더 버튼 사용
+    };
+    onScroll();
+    window.addEventListener("scroll", onScroll, { passive: true });
+  }
+
+  // 움직임 줄이기 설정이면 배경 영상 멈춤
+  var vid = document.querySelector(".hv-video");
+  if (vid && window.matchMedia("(prefers-reduced-motion: reduce)").matches) { vid.removeAttribute("autoplay"); vid.pause(); }
+
+  // 전후 비교 슬라이더
+  document.querySelectorAll(".ba-box").forEach(function (box) {
+    var r = box.querySelector("input");
+    r.addEventListener("input", function () { box.style.setProperty("--pos", r.value + "%"); });
+  });
+
+  // 요금 섹션 평수 계산기
+  var calcBox = document.querySelector(".calc");
+  if (calcBox) {
+    var cr = calcBox.querySelector("input"), rate = +calcBox.dataset.rate, link = calcBox.querySelector("[data-calc-link]");
+    var upd = function () {
+      calcBox.querySelector("output b").textContent = cr.value;
+      calcBox.querySelector(".calc-sum b").textContent = (cr.value * rate).toLocaleString("ko-KR");
+      link.href = link.href.replace(/py=\d+/, "py=" + cr.value);
+    };
+    cr.addEventListener("input", upd);
+  }
+
   if (!form) return;
   var steps = form.querySelectorAll(".q-step");
   var bars = form.querySelectorAll(".q-progress li");
@@ -129,7 +163,10 @@
   });
 
   // /quote/?service=move-in 처럼 들어오면 서비스 미리 선택
-  var slug = new URLSearchParams(location.search).get("service");
+  var qs = new URLSearchParams(location.search);
+  var py = parseInt(qs.get("py"), 10);
+  if (py > 0) { num.value = py; range.value = Math.min(80, Math.max(10, py)); }
+  var slug = qs.get("service");
   var map = S.svc || {};
   map["package"] = "올인원 패키지";
   if (!(slug && map[slug] && pick(map[slug]))) show(0);

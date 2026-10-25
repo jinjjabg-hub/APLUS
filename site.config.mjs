@@ -15,8 +15,16 @@ export default {
   name: "에이쁠종합청소",
   subName: "에이쁠홈케어 | A+ Clean",
   // 한 줄 포지셔닝 (메인 첫 화면 제목). {강조} 부분은 청록색으로 표시됩니다.
-  tagline: "새 집의 첫 공기까지, {에이쁠}이 책임집니다",
-  intro: "눈에 보이는 생활 오염은 기본, 천장·벽지·몰딩 속에 숨은 공사 분진까지 직영팀이 체크리스트대로 꼼꼼하게 정리합니다.",
+  tagline: "새 집의 첫 공기까지",
+  intro: "천장과 벽지, 서랍 레일 속 공사 분진까지. 직영팀이 같은 체크리스트로 정리하고, 고객님과 함께 검수한 뒤 마칩니다.",
+
+  // 첫 화면 영상: src/assets/ 에 넣고 `npm run video -- 원본파일.mp4` 를 실행하면 자동으로 압축됩니다.
+  // 파일이 없으면 영상 대신 어두운 배경이 보입니다.
+  heroVideo: {
+    desktop: "/assets/hero.mp4", // 가로 1280px, 10~15초, 소리 없음
+    mobile: "/assets/hero-m.mp4", // 세로 720px (없으면 desktop 사용)
+    poster: "/assets/hero-poster.webp", // 영상이 뜨기 전 보이는 첫 장면
+  },
 
   // 대표 도메인 (https 포함, 끝에 / 없이). www 없는 주소를 기준으로 합니다.
   domain: "[TODO:https://example.com]",
