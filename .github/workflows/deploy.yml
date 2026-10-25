@@ -1,0 +1,52 @@
+# main에 올라가면 자동으로 빌드·점검 후 GitHub Pages에 배포합니다.
+# PR에서는 빌드·링크 점검만 합니다.
+name: Build & Deploy
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: 빌드 + 깨진 링크·용량 점검
+        run: npm run check
+      # GitHub Pages는 /APLUS/ 하위 주소라서 상대주소 버전(preview)을 올립니다.
+      # 자체 도메인을 연결하면 dist/ 를 올리도록 바꾸세요.
+      - name: Pages용 빌드
+        run: npm run preview
+      - uses: actions/upload-pages-artifact@v3
+        if: github.event_name != 'pull_request'
+        with:
+          path: preview
+
+  deploy:
+    if: github.event_name != 'pull_request'
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - uses: actions/configure-pages@v5
+        with:
+          enablement: true
+        continue-on-error: true
+      - id: deployment
+        uses: actions/deploy-pages@v4
