@@ -57,7 +57,7 @@ export const icon = {
   shield: line("M12 3l8 3v6c0 4.5-3.4 8.3-8 9-4.6-.7-8-4.5-8-9V6zm-3.5 9l2.5 2.5 4.5-5"),
   coin: line("M12 21a9 9 0 1 0 0-18 9 9 0 0 0 0 18zm-3-7.5h6M9 10h6m-4.5-3l1.5 3 1.5-3M12 10v7"),
   leaf: line("M5 19c0-8 6-14 15-14 0 9-6 15-14 15M5 19l7-7"),
-  logo: `<svg viewBox="0 0 40 40" aria-hidden="true"><rect width="40" height="40" rx="11" fill="#0f766e"/><path d="M11.5 28 18 11h4l6.5 17h-4.2l-1.3-3.7h-6.1L15.6 28zm6.3-7h4.2L20 14.9z" fill="#fff"/><path d="M30 9.5v7M26.5 13h7" stroke="#fbbf24" stroke-width="2.6" stroke-linecap="round"/></svg>`,
+  logo: `<svg viewBox="0 0 40 40" aria-hidden="true"><rect x="1" y="1" width="38" height="38" rx="10" fill="none" stroke="currentColor" stroke-width="1.6"/><path d="M11 28.5 18.2 11h3.6l7.2 17.5h-3.9l-1.5-4h-7.2l-1.5 4zm6.6-7.2h4.8L20 14.8z" fill="currentColor"/><path d="M30.5 8.5v6M27.5 11.5h6" stroke="#e0a43a" stroke-width="2" stroke-linecap="round"/></svg>`,
 };
 
 // ── <head> ──────────────────────────────────────────────────
@@ -88,11 +88,11 @@ ${ver.google ? `<meta name="google-site-verification" content="${esc(ver.google)
 <meta property="og:image:height" content="630">
 <meta property="og:image:alt" content="${esc(site.name + " · " + site.region + " 입주청소·이사청소")}">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="theme-color" content="#0f172a">
+<meta name="theme-color" content="#0b1513">
 <link rel="icon" href="${u("/assets/favicon.svg")}" type="image/svg+xml">
-<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="${u("/assets/fonts/pretendard/pretendardvariable-dynamic-subset.css")}">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;700&family=Plus+Jakarta+Sans:wght@700;800&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@500;700&display=swap">
 <link rel="stylesheet" href="${u("/assets/style.css")}">
 ${ld}
 </head>`;
@@ -101,10 +101,10 @@ ${ld}
 // ── 헤더 / 푸터 / 퀵메뉴 ───────────────────────────────────
 const brand = () => `<a class="brand" href="${u("/")}">${icon.logo}<span><b>${v(cfg.name)}</b><small>${v(cfg.subName)}</small></span></a>`;
 
-export function header() {
+export function header({ overlay = false } = {}) {
   const nav = [
-    ["/#services", "서비스 안내"],
-    ["/services/move-in/", "입주청소"],
+    ["/#services", "서비스"],
+    ["/#price", "요금"],
     ["/reviews/", "시공사례·후기"],
     ["/faq/", "자주 묻는 질문"],
     ["/about/", "회사소개"],
@@ -112,15 +112,15 @@ export function header() {
   return `<body>
 ${cfg.draft ? `<div class="draft-bar">시안입니다 · <span class="todo">노란 표시</span>는 실제 정보로 바뀔 자리예요</div>` : ""}
 <a class="skip" href="#main">본문 바로가기</a>
-<header class="site-header">
+<header class="site-header${overlay ? " is-overlay" : ""}">
   <div class="wrap header-in">
     ${brand()}
     <nav class="nav" aria-label="주요 메뉴">
       ${nav.map(([h, t]) => `<a href="${u(h)}">${t}</a>`).join("")}
     </nav>
     <div class="h-cta">
-      <a class="h-tel" href="${site.tel}"><small>전화문의 (${v(cfg.hours)})</small><b>${v(cfg.phone)}</b></a>
-      <a class="btn btn-sm" href="${u("/quote/")}">무료 견적 신청</a>
+      <a class="h-tel" href="${site.tel}">${v(cfg.phone)}</a>
+      <a class="btn btn-sm" href="${u("/quote/")}">견적 문의</a>
     </div>
     <details class="mnav">
       <summary aria-label="메뉴 열기"><span></span><span></span><span></span></summary>
@@ -260,34 +260,31 @@ export function quoteForm() {
 </form>`;
 }
 
-// 전후 사진 자리 (실제 사진이 생기면 교체)
-export function photoSlots(list) {
-  return `<div class="ba-grid">${list
-    .map(
-      (label) => `<figure class="ba">
-    <div class="ba-pair">
-      <div class="slot"><b>BEFORE</b><span>실제 현장 사진 자리</span></div>
-      <div class="slot"><b>AFTER</b><span>실제 현장 사진 자리</span></div>
-    </div>
-    <figcaption>${v(label)}</figcaption>
-    <!-- [TODO] 실제 사진으로 교체: README의 "사진 넣는 법" 참고 -->
-  </figure>`
-    )
-    .join("")}</div>`;
+// 전후 비교 슬라이더: 실제 사진이 생기면 before/after 에 경로를 넣으세요. 없으면 빈 자리로 보입니다.
+export function baSlider({ before = "", after = "", caption = "[TODO:현장명 · 평형 · 작업 부위]" } = {}) {
+  const layer = (src, label) =>
+    src ? `<img src="${u(src)}" alt="${label}" loading="lazy" width="1600" height="1000">` : `<span class="ba-empty">${label} 사진 자리</span>`;
+  return `<figure class="ba-slider">
+  <div class="ba-box" style="--pos:50%">
+    <div class="ba-layer ba-after">${layer(after, "AFTER")}</div>
+    <div class="ba-layer ba-before">${layer(before, "BEFORE")}</div>
+    <span class="ba-tag ba-tag-l">작업 전</span><span class="ba-tag ba-tag-r">작업 후</span>
+    <span class="ba-handle" aria-hidden="true"></span>
+    <input type="range" min="0" max="100" value="50" aria-label="작업 전후 비교">
+  </div>
+  <figcaption>${v(caption)}</figcaption>
+  <!-- [TODO] 실제 사진으로 교체: README의 "사진 넣는 법" 참고 -->
+</figure>`;
 }
 
 export function ctaBand(title = "사진 한 장이면 견적이 빨라져요") {
   return `<section class="cta-band">
-  <div class="wrap">
-    <div>
-      <p class="eyebrow-dark">1분 사진 견적</p>
-      <h2>${title}</h2>
-      <p>창틀이나 주방 사진을 카톡으로 보내 주시면, 추가금 없는 견적과 가능한 일정을 바로 안내드립니다.</p>
-    </div>
+  <div class="wrap cta-in">
+    <h2 class="h-serif">${title}</h2>
+    <p>창틀이나 주방 사진을 카톡으로 보내 주시면, 추가금 없는 견적과 가능한 날짜를 안내드립니다.</p>
     <div class="cta-row">
       <a class="btn btn-kakao" href="${esc(site.kakao)}" target="_blank" rel="noopener">${icon.chat} 카톡으로 사진 보내기</a>
-      <a class="btn btn-light" href="${site.tel}">${icon.phone} 전화 상담</a>
-      <a class="btn btn-outline-light" href="${u("/quote/")}">${icon.doc} 견적 신청</a>
+      <a class="btn btn-line" href="${site.tel}">${icon.phone} ${v(cfg.phone)}</a>
     </div>
   </div>
 </section>`;

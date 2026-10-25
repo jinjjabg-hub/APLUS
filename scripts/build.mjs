@@ -27,7 +27,7 @@ const built = [];
 for (const { path: p, render } of pageList) {
   setPage(p, preview);
   const pg = render();
-  let html = head(pg) + header() + pg.body + footer();
+  let html = head(pg) + header({ overlay: pg.overlay }) + pg.body + footer();
   if (pg.noindex) html = html.replace(/<meta name="robots"[^>]*>/, '<meta name="robots" content="noindex">');
   write(p.endsWith("/") ? p + "index.html" : p, html);
   if (!pg.noindex) built.push(p);
