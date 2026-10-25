@@ -4,8 +4,8 @@ import fs from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import cfg from "../site.config.mjs";
-import { services } from "../src/content.mjs";
-import { head, header, footer, setPage, site, txt, abs } from "../src/layout.mjs";
+import { services, perPyeong } from "../src/content.mjs";
+import { head, header, footer, setPage, site, txt, abs, taglineText, regionSummary } from "../src/layout.mjs";
 import { pageList } from "../src/pages.mjs";
 
 const root = path.dirname(path.dirname(fileURLToPath(import.meta.url)));
@@ -61,24 +61,25 @@ Sitemap: ${abs("/sitemap.xml")}
 const c = cfg.company;
 write(
   "llms.txt",
-  `# ${site.name}
+  `# ${site.name} (${txt(cfg.subName)})
 
-> ${site.regionText} 지역 청소 업체. ${services.map((s) => s.name).join(", ")}. ${txt(cfg.tagline)}.
+> ${site.region} 지역 직영 청소 업체. ${services.map((s) => s.name).join(", ")}. ${taglineText(cfg.tagline)}.
 
 ## 회사 소개
 - 상호: ${site.name}
 - 대표자: ${txt(c.owner)}
 - 주소: ${txt(c.address)}
 - 사업자등록번호: ${txt(c.bizNo)} / 통신판매업 신고번호: ${txt(c.mailOrderNo)}
-- 약속: 모든 현장 동일 체크리스트·검수 순서, 고객 동반 검수, 작업 후 ${txt(cfg.asDays)}일 이내 A/S
+- 약속: 본사 직영팀 직접 시공, 모든 현장 동일 체크리스트·검수 순서, 고객 동행 검수 후 미흡 부위 즉시 보완, 사전 고지 외 추가금 없음, 상담 후 영업 전화 없음
 
 ## 서비스 지역
-${cfg.region.districts.map((d) => `- ${txt(cfg.region.city)} ${txt(d)}`).join("\n")}
+${cfg.region.areas.map((a) => `- ${a.full}: ${a.parts.join(", ")}`).join("\n")}
 - ${txt(cfg.region.note)}
 
 ## 서비스와 요금
-${services.map((s) => `- [${s.name}](${abs(`/services/${s.slug}/`)}): ${txt(s.priceFrom)} — ${s.short}`).join("\n")}
-- 최종 금액은 평수·오염 정도·추가 항목을 확인한 뒤 확정
+${services.map((s) => `- [${s.name}](${abs(`/services/${s.slug}/`)}): ${txt(s.priceFrom)} (${s.priceNote}) — ${s.short}`).join("\n")}
+- 입주·이사청소 기본 단가: ${txt(cfg.priceBasis)} ${perPyeong}. 최종 금액은 베란다 확장 여부·오염 정도·추가 시공을 확인한 뒤 확정
+- 외창(바깥면 유리)은 안전상 기본 제외, 협의 가능
 
 ## 연락처
 - 전화: ${site.phone}

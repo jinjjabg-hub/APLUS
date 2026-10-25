@@ -5,17 +5,18 @@ const { chromium } = createRequire(import.meta.url)("playwright");
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import cfg from "../site.config.mjs";
-import { site, txt } from "../src/layout.mjs";
+import { site, txt, icon } from "../src/layout.mjs";
+import { perPyeong } from "../src/content.mjs";
 
 const root = path.dirname(path.dirname(fileURLToPath(import.meta.url)));
-const html = `<html><body style="margin:0;width:1200px;height:630px;font-family:'Noto Sans CJK KR','Noto Sans KR',sans-serif;background:linear-gradient(150deg,#eaf8f1,#fff 60%);display:flex;flex-direction:column;justify-content:center;padding:0 90px;box-sizing:border-box;color:#17252a">
-<div style="display:flex;align-items:center;gap:18px;font-size:44px;font-weight:800"><svg width="64" height="64" viewBox="0 0 32 32"><rect width="32" height="32" rx="9" fill="#0f5e63"/><path d="M16 6l2.4 6.6L25 15l-6.6 2.4L16 24l-2.4-6.6L7 15l6.6-2.4z" fill="#b8f0d8"/></svg>${site.name}</div>
-<div style="font-size:60px;font-weight:800;line-height:1.25;margin:34px 0 26px;letter-spacing:-1px">${site.regionText}<br>입주·이사청소</div>
-<div style="font-size:32px;color:#0f5e63;font-weight:700">${txt(cfg.priceAnchor)}부터 · 작업 후 ${txt(cfg.asDays)}일 이내 A/S · ${site.phone}</div>
+const html = `<html><body style="margin:0;width:1200px;height:630px;font-family:'Noto Sans CJK KR','Noto Sans KR',sans-serif;background:radial-gradient(circle at 85% 20%,#134e4a 0,#0f172a 55%);display:flex;flex-direction:column;justify-content:center;padding:0 90px;box-sizing:border-box;color:#fff">
+<div style="display:flex;align-items:center;gap:18px;font-size:40px;font-weight:800"><span style="width:72px;height:72px;display:block">${icon.logo}</span>${site.name}<span style="font-size:26px;color:#94a3b8;font-weight:500">${txt(cfg.subName)}</span></div>
+<div style="font-size:64px;font-weight:800;line-height:1.25;margin:40px 0 30px;letter-spacing:-1px">${site.region} 입주·이사청소<br><span style="color:#5eead4">새 집의 첫 공기까지</span></div>
+<div style="font-size:30px;color:#fbbf24;font-weight:700">${txt(cfg.priceBasis)} ${perPyeong} · 직영팀 시공 · 고객 동행 검수</div>
 </body></html>`;
 const b = await chromium.launch();
 const p = await b.newPage({ viewport: { width: 1200, height: 630 } });
 await p.setContent(html);
-await p.screenshot({ path: path.join(root, "src/assets/og.png") });
+await p.screenshot({ path: path.join(root, "src/assets/og.jpg"), type: "jpeg", quality: 82 });
 await b.close();
-console.log("✔ src/assets/og.png 생성");
+console.log("✔ src/assets/og.jpg 생성");

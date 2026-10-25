@@ -1,4 +1,4 @@
-// 견적 폼 4단계 진행 + 카카오톡/문자 전송
+// 견적 폼 4단계 진행 + 예상 금액 계산 + 카카오톡/문자 전송
 (function () {
   var form = document.getElementById("qform");
   var S = window.SITE || {};
@@ -17,12 +17,43 @@
   var prev = form.querySelector("[data-prev]");
   var next = form.querySelector("[data-next]");
   var send = form.querySelector(".q-send");
+  var range = form.pyeongRange, num = form.pyeong;
   var cur = 0;
 
   function val(n) {
     var el = form.querySelector('[name="' + n + '"]:checked') || form.querySelector('[name="' + n + '"]:not([type=radio]):not([type=checkbox])');
     return el ? el.value.trim() : "";
   }
+  function all(n) {
+    return [].map.call(form.querySelectorAll('[name="' + n + '"]:checked'), function (x) { return x.value; });
+  }
+  function won(n) { return n.toLocaleString("ko-KR"); }
+
+  // 예상 금액: 입주·이사청소(+패키지 기본 청소분)만 평수 × 단가로 계산
+  function calc() {
+    var p = Math.max(0, parseInt(num.value, 10) || 0);
+    form.querySelector("[data-m2]").textContent = p ? "약 " + (p * 3.3058).toFixed(1) + "㎡ (공급면적)" : "";
+    var svc = val("service");
+    var sum = form.querySelector("[data-calc-sum]"), unit = form.querySelector("[data-calc-unit]"), note = form.querySelector("[data-calc-note]");
+    if (svc && (S.perPyeong || []).indexOf(svc) > -1 && p) {
+      sum.textContent = won(p * S.rate);
+      unit.textContent = "원~";
+      note.textContent = p + "평 × " + won(S.rate) + "원 기준" + (svc === "올인원 패키지" || all("addon").length ? " · 추가 시공은 상담 후 안내" : "");
+    } else if (svc) {
+      sum.textContent = "상담 후";
+      unit.textContent = "";
+      note.textContent = svc + "은 현장 확인 후 견적을 드려요.";
+    } else {
+      sum.textContent = "-";
+      unit.textContent = "";
+      note.textContent = "입주·이사청소를 고르면 평수로 바로 계산돼요.";
+    }
+    return sum.textContent + unit.textContent;
+  }
+  range.addEventListener("input", function () { num.value = range.value; calc(); });
+  num.addEventListener("input", function () { range.value = Math.min(80, Math.max(10, num.value || 10)); calc(); });
+  form.addEventListener("change", calc);
+
   function show(i) {
     cur = i;
     steps.forEach(function (s, k) { s.classList.toggle("on", k === i); });
@@ -30,6 +61,7 @@
     prev.hidden = i === 0;
     next.hidden = i === steps.length - 1;
     send.hidden = i !== steps.length - 1;
+    calc();
   }
   function ok(i) {
     var bad = false;
@@ -41,13 +73,14 @@
     return !bad;
   }
   function message() {
-    var date = val("date") ? val("date") : "미정";
+    var add = all("addon"), ext = all("extra");
     var lines = [
       "[견적 문의] " + (S.name || ""),
-      "서비스: " + val("service"),
-      "공간: " + val("space") + (val("size") ? " / " + val("size") : "") + " / 오염: " + val("dirt"),
-      "희망일: " + date + " " + val("time") + (form.flex.checked ? " (조정 가능)" : ""),
-      "지역: " + val("area"),
+      "서비스: " + val("service") + (add.length ? " + " + add.join(", ") : ""),
+      "공간: " + val("space") + " / 공급 " + val("pyeong") + "평 / 베란다 " + val("balcony") + (ext.length ? " / " + ext.join(", ") : ""),
+      "예상 기본 금액: " + calc(),
+      "희망일: " + (val("date") || "미정") + " " + val("time"),
+      "지역: " + val("area") + (val("building") ? " (" + val("building") + ")" : ""),
       "성함: " + (val("name") || "-"),
       "연락처: " + val("phone"),
     ];
@@ -55,9 +88,9 @@
     return lines.join("\n");
   }
 
-  // 단계 1에서 서비스를 고르면 자동으로 다음 단계로
+  // 단계 1에서 서비스를 고르면 금액을 보여 주고 자동으로 다음 단계로
   form.querySelectorAll('[name="service"]').forEach(function (r) {
-    r.addEventListener("change", function () { if (cur === 0) setTimeout(function () { show(1); }, 180); });
+    r.addEventListener("change", function () { calc(); if (cur === 0) setTimeout(function () { show(1); }, 250); });
   });
   next.addEventListener("click", function () { if (ok(cur)) show(cur + 1); });
   prev.addEventListener("click", function () { show(cur - 1); });
@@ -80,14 +113,17 @@
     });
   });
 
-  // 메인 첫 화면 "30초 견적" → 아래 폼으로 이어서
+  function pick(name) {
+    var r = form.querySelector('[name="service"][value="' + name + '"]');
+    if (r) { r.checked = true; show(1); }
+    return r;
+  }
+
+  // 메인 첫 화면 "1분 견적" → 아래 폼으로 이어서
   document.querySelectorAll("[data-pick]").forEach(function (a) {
     a.addEventListener("click", function (e) {
-      var r = form.querySelector('[name="service"][value="' + a.dataset.pick + '"]');
-      if (!r) return;
+      if (!pick(a.dataset.pick)) return;
       e.preventDefault();
-      r.checked = true;
-      show(1);
       document.getElementById("quote").scrollIntoView({ behavior: "smooth" });
     });
   });
@@ -95,8 +131,6 @@
   // /quote/?service=move-in 처럼 들어오면 서비스 미리 선택
   var slug = new URLSearchParams(location.search).get("service");
   var map = S.svc || {};
-  if (slug && map[slug]) {
-    var r = form.querySelector('[name="service"][value="' + map[slug] + '"]');
-    if (r) { r.checked = true; show(1); }
-  } else show(0);
+  map["package"] = "올인원 패키지";
+  if (!(slug && map[slug] && pick(map[slug]))) show(0);
 })();
