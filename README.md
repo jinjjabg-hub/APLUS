@@ -42,6 +42,27 @@ scripts/            build(빌드) · check(링크·용량 점검) · serve(미�
 | `npm run check` | 빌드 후 깨진 링크 점검 + 페이지 용량 측정 |
 | `npm run og` | 업체명·지역을 바꾼 뒤 공유 이미지(og.jpg)를 다시 생성 (Playwright 필요) |
 
+## 자동견적 앱 연결
+`site.config.mjs`의 `quoteApp.url`에 앱 주소를 넣으면 메인과 견적 페이지의 견적 칸이 앱으로 바뀝니다. 비워 두면 지금의 임시 견적 폼이 그대로 나옵니다.
+
+**사이트 → 앱으로 넘기는 값** (앱 주소 뒤에 붙음)
+| 값 | 예 | 뜻 |
+|---|---|---|
+| `ref` | `site` | 홈페이지에서 들어왔다는 표시 |
+| `service` | `move-in`, `move-out`, `construction`, `office`, `coating`, `sick-house`, `mattress`, `package` | 방문자가 고른 서비스 |
+| `py` | `34` | 요금 계산기에서 고른 공급평수 |
+
+예: `https://quote.example.com/?ref=site&service=move-in&py=34`
+
+**앱에서 해 줘야 할 것**
+1. **다른 사이트 안에 표시 허용**: 앱 서버 응답 헤더에 `Content-Security-Policy: frame-ancestors 'self' https://홈페이지주소`를 넣고, `X-Frame-Options: DENY`가 있으면 빼야 합니다. 안 하면 견적 칸이 빈 화면으로 나옵니다.
+2. **높이 알려 주기** (선택, 권장): 화면 높이가 바뀔 때마다 아래 코드를 실행하면 스크롤 없이 딱 맞게 보입니다.
+   `parent.postMessage({ type: "aplus-quote:height", height: document.body.scrollHeight }, "*")`
+3. **접수 완료 알리기** (선택): `parent.postMessage({ type: "aplus-quote:done" }, "*")`
+   → 나중에 전환 추적(네이버·구글 광고 전환 등)을 붙일 때 씁니다.
+
+사이트는 앱 주소와 같은 출처에서 온 메시지만 받습니다. 앱이 안 열릴 때를 대비해 견적 칸 아래에 "새 창에서 열기 · 카톡 · 전화"가 항상 나옵니다.
+
 ## 견적 폼 접수 방식
 서비스 → 공간 → 일정 → 연락처, 4단계로 진행됩니다. 마지막 단계에서 입력 내용이 정리된 문장으로 만들어집니다.
 - **카카오톡으로 보내기**: 내용을 자동으로 복사한 뒤 카카오톡 채널 대화창을 엽니다. 고객이 붙여넣기만 하면 접수됩니다.
