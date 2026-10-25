@@ -40,7 +40,7 @@ for (const file of htmls) {
 
 console.log("\n페이지                         HTML(KB)  CSS·JS·이미지(KB)  합계(KB)");
 for (const [f, h, a] of rows) console.log(`${f.padEnd(30)} ${h.toFixed(1).padStart(8)} ${a.toFixed(1).padStart(18)} ${(h + a).toFixed(1).padStart(9)}`);
-const og = fs.statSync(path.join(dir, "assets/og.png")).size / 1024;
-console.log(`\n(참고) 공유용 OG 이미지 og.png ${og.toFixed(1)}KB — 페이지 로딩에는 포함되지 않음`);
+const og = fs.statSync(path.join(dir, "assets/og.jpg")).size / 1024;
+console.log(`\n(참고) 공유용 OG 이미지 og.jpg ${og.toFixed(1)}KB — 페이지 로딩에는 포함되지 않음`);
 console.log(broken ? `\n✘ 깨진 링크 ${broken}개` : "\n✔ 깨진 내부 링크 없음");
 process.exit(broken ? 1 : 0);

@@ -1,11 +1,14 @@
-# 청소업체 홈페이지 (시안)
+# 에이쁠종합청소 홈페이지 (시안)
 
 **목적**: 청소는 결과를 미리 볼 수 없는 서비스라서, 이 홈페이지는 고객의 불안을 덜고 견적 문의까지 이어지게 만드는 것을 목표로 합니다. 광고비 없이 지역 검색(네이버·구글)과 AI 검색에서 문의를 받는 구조입니다.
 
 ## 3줄 사용법
 1. **열어보기**: `npm run preview`를 실행한 뒤 `preview/index.html`을 더블클릭합니다. 서버로 보려면 `npm run serve`를 실행하고 http://localhost:4000 에 접속합니다.
 2. **수정하기**: 업체 정보는 `site.config.mjs`, 서비스 문구·요금·FAQ는 `src/content.mjs`, 색은 `src/assets/style.css` 맨 위에서 고칩니다. 채울 항목은 `TODO.md`에 있습니다.
-3. **배포하기**: `npm run build`를 실행하면 `dist/` 폴더가 생깁니다. 이 폴더를 https://app.netlify.com/drop 에 끌어다 놓으면 배포가 끝납니다.
+3. **배포하기**: main 브랜치에 올라가면 GitHub Actions가 자동으로 점검하고 https://jinjjabg-hub.github.io/APLUS/ 에 배포합니다. 다른 곳에 올리려면 `npm run build`로 생긴 `dist/` 폴더를 https://app.netlify.com/drop 에 끌어다 놓으면 됩니다.
+
+## 디자인 기준
+업체 Stitch 시안 "Pristine Care Sanctuary"의 색(청록 #0D9488, 앰버 #F59E0B, 슬레이트)과 글꼴(Plus Jakarta Sans + Noto Sans KR)을 따랐습니다. 시안 속 사진은 AI 생성 이미지라서 쓰지 않았고, 확인되지 않은 인증 문구도 뺐습니다(`TODO.md` C항목 참고).
 
 ## 왜 순수 HTML인가
 설치할 것이 없고(Node만 있으면 됨), 결과물이 정적 파일이라 어떤 호스팅에도 올라갑니다. 서버 비용과 유지보수 부담이 없습니다.
@@ -27,7 +30,7 @@ scripts/            build(빌드) · check(링크·용량 점검) · serve(미�
 | `npm run preview` | `preview/` 생성 (더블클릭으로 열 수 있는 버전) |
 | `npm run serve` | 빌드 후 http://localhost:4000 에서 미리보기 |
 | `npm run check` | 빌드 후 깨진 링크 점검 + 페이지 용량 측정 |
-| `npm run og` | 업체명·지역을 바꾼 뒤 공유 이미지(og.png)를 다시 생성 (Playwright 필요) |
+| `npm run og` | 업체명·지역을 바꾼 뒤 공유 이미지(og.jpg)를 다시 생성 (Playwright 필요) |
 
 ## 견적 폼 접수 방식
 서비스 → 공간 → 일정 → 연락처, 4단계로 진행됩니다. 마지막 단계에서 입력 내용이 정리된 문장으로 만들어집니다.
