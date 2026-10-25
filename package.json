@@ -1,0 +1,12 @@
+{
+  "name": "cleaning-site",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "node scripts/build.mjs",
+    "preview": "node scripts/build.mjs --preview",
+    "serve": "node scripts/build.mjs && node scripts/serve.mjs",
+    "check": "node scripts/build.mjs && node scripts/check.mjs",
+    "og": "node scripts/make-og.mjs"
+  }
+}
