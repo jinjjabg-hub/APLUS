@@ -45,6 +45,24 @@
     cr.addEventListener("input", upd);
   }
 
+  // 자동견적 앱(iframe): 사이트에서 고른 서비스·평수를 앱 주소에 붙여서 엽니다.
+  var appBox = document.querySelector(".quote-app");
+  if (appBox) {
+    var base = appBox.dataset.app, origin = new URL(base).origin;
+    var p = new URLSearchParams(location.search), pass = new URLSearchParams({ ref: "site" });
+    ["service", "py"].forEach(function (k) { if (p.get(k)) pass.set(k, p.get(k)); });
+    var src = base + (base.indexOf("?") > -1 ? "&" : "?") + pass.toString();
+    var frame = appBox.querySelector("iframe");
+    frame.src = src;
+    appBox.querySelector("[data-app-link]").href = src;
+    // 앱이 보내는 메시지: 높이 자동 맞춤, 접수 완료
+    window.addEventListener("message", function (e) {
+      if (e.origin !== origin || !e.data || typeof e.data !== "object") return;
+      if (e.data.type === "aplus-quote:height" && e.data.height > 200) frame.style.height = Math.ceil(e.data.height) + "px";
+      if (e.data.type === "aplus-quote:done") appBox.classList.add("is-done");
+    });
+  }
+
   if (!form) return;
   var steps = form.querySelectorAll(".q-step");
   var bars = form.querySelectorAll(".q-progress li");

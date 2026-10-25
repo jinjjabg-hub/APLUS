@@ -4,7 +4,7 @@ import path from "node:path";
 import { fileURLToPath } from "node:url";
 import cfg from "../site.config.mjs";
 import { services, promises, equipment, steps, inspection, faqs, perPyeong } from "./content.mjs";
-import { v, txt, site, regionSummary, areaServed, u, abs, icon, quoteForm, baSlider, ctaBand } from "./layout.mjs";
+import { v, txt, site, regionSummary, areaServed, u, abs, icon, quoteBlock, baSlider, ctaBand } from "./layout.mjs";
 
 const R = cfg.region.label; // 부산·경남
 const root = path.dirname(path.dirname(fileURLToPath(import.meta.url)));
@@ -238,7 +238,7 @@ ${priceBlock()}
       <p>서비스, 공간, 날짜, 연락처만 골라 주세요. 입주·이사청소는 평수를 넣는 순간 예상 금액이 보입니다.</p>
       <p class="quote-direct">바로 상담<br><a href="${site.tel}">${v(cfg.phone)}</a><br><small>${v(cfg.hours)}</small></p>
     </div>
-    ${quoteForm()}
+    ${quoteBlock()}
   </div>
 </section>`;
   return { path: "/", title, description, body, overlay: true, jsonld: [localBusiness(), faqPage(faqs(cfg))] };
@@ -359,7 +359,7 @@ function quote() {
       <ul class="plain-list small">${promises(cfg).slice(1, 5).map((x) => `<li>${v(x.title)}</li>`).join("")}</ul>
       <p class="quote-direct">바로 상담<br><a href="${site.tel}">${v(cfg.phone)}</a><br><small>${v(cfg.hours)}</small></p>
     </div>
-    ${quoteForm()}
+    ${quoteBlock()}
   </div>
 </section>`,
     jsonld: [crumbs([["무료 견적", p]])],

@@ -271,6 +271,14 @@ svg { width: 1.1em; height: 1.1em; fill: currentColor; flex: none; }
 .q-done { margin-top: 16px; background: var(--paper); border-radius: var(--r); padding: 14px; }
 .q-done textarea { font-size: .88rem; margin-top: 4px; }
 
+/* 자동견적 앱 자리 */
+.quote-slot { min-width: 0; }
+.app-slot { border: 1px dashed rgba(255, 255, 255, .35); color: rgba(232, 236, 234, .75); font-size: .8rem; padding: 8px 12px; border-radius: var(--r); margin: 0 0 10px; }
+.quote-app { min-width: 0; }
+.quote-app iframe { display: block; width: 100%; border: 0; background: #fff; border-radius: var(--r); transition: height .2s; }
+.quote-app-alt { font-size: .8rem; color: rgba(232, 236, 234, .6); margin: 10px 0 0; }
+.quote-app-alt a { color: #fff; }
+
 /* 하위 페이지 머리 */
 .page-head { padding: 28px 0 0; }
 .crumbs { font-size: .8rem; color: var(--mute); margin-bottom: 44px; }

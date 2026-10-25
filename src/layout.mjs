@@ -260,6 +260,22 @@ export function quoteForm() {
 </form>`;
 }
 
+// 견적 칸: 자동견적 앱 주소가 있으면 앱을, 없으면 임시 견적 폼을 넣습니다.
+export function quoteBlock() {
+  const app = cfg.quoteApp || {};
+  if (!app.url) {
+    const note = cfg.draft
+      ? `<p class="app-slot">자동견적 앱이 들어갈 자리 · 지금은 임시 견적 폼이에요</p>`
+      : "";
+    return `<div class="quote-slot">${note}${quoteForm()}</div>`;
+  }
+  // src는 main.js가 페이지 주소의 service·py 값을 붙여서 채웁니다.
+  return `<div class="quote-app" data-app="${esc(app.url)}">
+  <iframe title="${esc(site.name)} 자동견적" style="height:${Number(app.height) || 820}px" loading="lazy" allow="clipboard-write" referrerpolicy="strict-origin-when-cross-origin"></iframe>
+  <p class="quote-app-alt">견적 화면이 안 보이면 <a href="${esc(app.url)}" target="_blank" rel="noopener" data-app-link>새 창에서 열기</a> · <a href="${esc(site.kakao)}" target="_blank" rel="noopener">카톡 문의</a> · <a href="${site.tel}">${v(cfg.phone)}</a></p>
+</div>`;
+}
+
 // 전후 비교 슬라이더: 실제 사진이 생기면 before/after 에 경로를 넣으세요. 없으면 빈 자리로 보입니다.
 export function baSlider({ before = "", after = "", caption = "[TODO:현장명 · 평형 · 작업 부위]" } = {}) {
   const layer = (src, label) =>

@@ -74,4 +74,12 @@ export default {
     kakao: true,
     sms: true,
   },
+
+  // 자동견적 웹앱: 주소를 넣으면 견적 칸이 앱으로 바뀝니다. 비워 두면 위의 임시 견적 폼이 보입니다.
+  //   예) url: "https://quote.example.com"
+  // 앱 쪽에서 해 줘야 할 설정은 README의 "자동견적 앱 연결"을 보세요.
+  quoteApp: {
+    url: "", // [TODO] 자동견적 웹앱 주소 (https://…)
+    height: 820, // 앱이 높이를 알려 주기 전 기본 높이(px)
+  },
 };
