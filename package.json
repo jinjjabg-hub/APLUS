@@ -8,6 +8,7 @@
     "serve": "node scripts/build.mjs && node scripts/serve.mjs",
     "check": "node scripts/build.mjs && node scripts/check.mjs",
     "og": "node scripts/make-og.mjs",
-    "video": "node scripts/make-video.mjs"
+    "video": "node scripts/make-video.mjs",
+    "fonts": "node scripts/make-fonts.mjs"
   }
 }

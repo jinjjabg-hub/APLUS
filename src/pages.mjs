@@ -181,7 +181,7 @@ function home() {
 
 <section class="sec" id="services">
   <div class="wrap">
-    <div class="sec-top"><h2 class="h-serif">맡기실 공간을<br>골라 주세요</h2><p>공간마다 장비와 세제가 다릅니다. 순서와 검수 기준은 같습니다.</p></div>
+    <div class="sec-top"><h2 class="h-title">맡기실 공간을<br>골라 주세요</h2><p>공간마다 장비와 세제가 다릅니다. 순서와 검수 기준은 같습니다.</p></div>
     ${serviceIndex()}
   </div>
 </section>
@@ -189,7 +189,7 @@ function home() {
 <section class="sheet-sec">
   <div class="wrap sheet-in">
     <div class="sheet-copy">
-      <h2 class="h-serif">끝은<br>검수표로 정합니다</h2>
+      <h2 class="h-title">끝은<br>검수표로 정합니다</h2>
       <p>청소가 끝나면 팀장과 고객님이 이 표를 한 줄씩 대조합니다. 모든 칸이 채워져야 작업이 끝나고, 그다음에 결제합니다.</p>
       <p class="muted">담당 팀장이 바뀌어도 이 표는 바뀌지 않습니다.</p>
       <ul class="equip">${equipment.map(([t, d]) => `<li><b>${t}</b> ${v(d)}</li>`).join("")}</ul>
@@ -200,7 +200,7 @@ function home() {
 
 <section class="sec">
   <div class="wrap">
-    <div class="sec-top"><h2 class="h-serif">작업 전과 후</h2><p>실제 현장 사진만 올립니다. 가운데 선을 밀어 비교해 보세요.</p></div>
+    <div class="sec-top"><h2 class="h-title">작업 전과 후</h2><p>실제 현장 사진만 올립니다. 가운데 선을 밀어 비교해 보세요.</p></div>
     ${baSlider({ caption: "[TODO:해운대 OO아파트 34평 · 주방 하부장 걸레받이]" })}
   </div>
 </section>
@@ -209,14 +209,14 @@ ${priceBlock()}
 
 <section class="sec">
   <div class="wrap">
-    <div class="sec-top"><h2 class="h-serif">진행 순서</h2><p>문의부터 사후관리까지 다섯 단계입니다.</p></div>
+    <div class="sec-top"><h2 class="h-title">진행 순서</h2><p>문의부터 사후관리까지 다섯 단계입니다.</p></div>
     ${stepsLine()}
   </div>
 </section>
 
 <section class="sec sec-line">
   <div class="wrap two-col">
-    <div><h2 class="h-serif">고객후기</h2><p>고객님이 동의한 실제 후기만 사진과 함께 싣습니다. 지어낸 후기나 예시는 올리지 않습니다.</p></div>
+    <div><h2 class="h-title">고객후기</h2><p>고객님이 동의한 실제 후기만 사진과 함께 싣습니다. 지어낸 후기나 예시는 올리지 않습니다.</p></div>
     <div class="rv-quiet">
       <p class="todo-block">첫 후기를 준비하고 있습니다.<br><small>[여기에 넣을 자료] 별점 · 현장 사진 · 지역 · 평형 · 작업일</small></p>
       <p><a href="${u("/reviews/")}">시공사례·후기 페이지 ${icon.arrow}</a> · <span class="todo">네이버 플레이스 리뷰 링크</span></p>
@@ -226,7 +226,7 @@ ${priceBlock()}
 
 <section class="sec sec-line">
   <div class="wrap two-col">
-    <div><h2 class="h-serif">서비스 지역</h2><p>${regionSummary}에 직접 출장합니다.</p></div>
+    <div><h2 class="h-title">서비스 지역</h2><p>${regionSummary}에 직접 출장합니다.</p></div>
     ${regionText()}
   </div>
 </section>
@@ -234,7 +234,7 @@ ${priceBlock()}
 <section class="quote-sec" id="quote">
   <div class="wrap quote-in">
     <div class="quote-copy">
-      <h2 class="h-serif">견적은<br>1분이면 됩니다</h2>
+      <h2 class="h-title">견적은<br>1분이면 됩니다</h2>
       <p>서비스, 공간, 날짜, 연락처만 골라 주세요. 입주·이사청소는 평수를 넣는 순간 예상 금액이 보입니다.</p>
       <p class="quote-direct">바로 상담<br><a href="${site.tel}">${v(cfg.phone)}</a><br><small>${v(cfg.hours)}</small></p>
     </div>
@@ -256,7 +256,7 @@ function servicePage(s) {
   <div class="wrap">
     ${crumbNav([["서비스", "/#services"], [s.name, p]])}
     <p class="kicker">${R} · ${s.badge}</p>
-    <h1 class="h-serif ph-title">${s.name}</h1>
+    <h1 class="h-title ph-title">${s.name}</h1>
     <p class="ph-lead">${s.short}</p>
     <div class="ph-meta">
       <p><span>기본 요금</span><b>${v(s.priceFrom)}</b><small>${s.priceNote}</small></p>
@@ -273,14 +273,14 @@ function servicePage(s) {
 
 <section class="sec">
   <div class="wrap two-col">
-    <div><h2 class="h-serif">이럴 때<br>맡기세요</h2></div>
+    <div><h2 class="h-title">이럴 때<br>맡기세요</h2></div>
     <ul class="plain-list">${s.when.map((w) => `<li>${v(w)}</li>`).join("")}</ul>
   </div>
 </section>
 
 ${s.compare ? `<section class="sec sec-line">
   <div class="wrap">
-    <div class="sec-top"><h2 class="h-serif">일반 청소와<br>무엇이 다른가요</h2></div>
+    <div class="sec-top"><h2 class="h-title">일반 청소와<br>무엇이 다른가요</h2></div>
     <div class="vs">
       <div><p class="vs-h">일반 청소로 남는 것</p>${s.compare.bad.map(([t, d]) => `<p><b>${t}</b>${d}</p>`).join("")}</div>
       <div class="vs-good"><p class="vs-h">${site.name}의 방식</p>${s.compare.good.map(([t, d]) => `<p><b>${t}</b>${d}</p>`).join("")}</div>
@@ -291,7 +291,7 @@ ${s.compare ? `<section class="sec sec-line">
 <section class="sheet-sec">
   <div class="wrap sheet-in">
     <div class="sheet-copy">
-      <h2 class="h-serif">${s.name}<br>작업 범위</h2>
+      <h2 class="h-title">${s.name}<br>작업 범위</h2>
       <p>현장마다 이 표 순서대로 작업하고, 끝나면 함께 한 줄씩 확인합니다.</p>
       <p class="muted"><b>별도 문의</b><br>${s.notIncluded.map(v).join("<br>")}</p>
     </div>
@@ -301,21 +301,21 @@ ${s.compare ? `<section class="sec sec-line">
 
 <section class="sec">
   <div class="wrap">
-    <div class="sec-top"><h2 class="h-serif">${s.name} 전과 후</h2></div>
+    <div class="sec-top"><h2 class="h-title">${s.name} 전과 후</h2></div>
     ${baSlider({ caption: `[TODO:${s.name} 현장명 · 평형 · 작업 부위]` })}
   </div>
 </section>
 
 <section class="sec sec-line">
   <div class="wrap">
-    <div class="sec-top"><h2 class="h-serif">진행 순서</h2></div>
+    <div class="sec-top"><h2 class="h-title">진행 순서</h2></div>
     ${stepsLine()}
   </div>
 </section>
 
 <section class="sec sec-line">
   <div class="wrap two-col">
-    <div><h2 class="h-serif">자주 묻는<br>질문</h2><p><a href="${u("/faq/")}">전체 질문 보기 ${icon.arrow}</a></p></div>
+    <div><h2 class="h-title">자주 묻는<br>질문</h2><p><a href="${u("/faq/")}">전체 질문 보기 ${icon.arrow}</a></p></div>
     ${faqList(s.faqs)}
   </div>
 </section>
@@ -324,7 +324,7 @@ ${ctaBand(`${s.name}, 사진 한 장이면<br>견적이 빨라져요`)}
 
 <section class="sec">
   <div class="wrap">
-    <div class="sec-top"><h2 class="h-serif">다른 서비스</h2></div>
+    <div class="sec-top"><h2 class="h-title">다른 서비스</h2></div>
     ${serviceIndex(others, { pkg: false })}
   </div>
 </section>`;
@@ -354,7 +354,7 @@ function quote() {
   <div class="wrap">${crumbNav([["무료 견적", p]])}</div>
   <div class="wrap quote-in">
     <div class="quote-copy">
-      <h1 class="h-serif">견적은<br>1분이면 됩니다</h1>
+      <h1 class="h-title">견적은<br>1분이면 됩니다</h1>
       <p>공급평수와 서비스를 고르시면 담당 팀장이 현장 특성을 반영해 상세 견적을 보내드립니다. 상담 후 영업 전화는 하지 않습니다.</p>
       <ul class="plain-list small">${promises(cfg).slice(1, 5).map((x) => `<li>${v(x.title)}</li>`).join("")}</ul>
       <p class="quote-direct">바로 상담<br><a href="${site.tel}">${v(cfg.phone)}</a><br><small>${v(cfg.hours)}</small></p>
@@ -377,13 +377,13 @@ function reviews() {
 <section class="page-head">
   <div class="wrap">
     ${crumbNav([["시공사례·후기", p]])}
-    <h1 class="h-serif ph-title">시공사례와 후기</h1>
+    <h1 class="h-title ph-title">시공사례와 후기</h1>
     <p class="ph-lead">실제 현장의 전후 사진과 동행 검수 후기를 그대로 올립니다. 예시나 지어낸 후기는 싣지 않습니다.</p>
   </div>
 </section>
 <section class="sec">
   <div class="wrap">
-    <div class="sec-top"><h2 class="h-serif">현장 사례</h2></div>
+    <div class="sec-top"><h2 class="h-title">현장 사례</h2></div>
     <div class="case-list">
       ${[1, 2].map(() => baSlider({ caption: "[TODO:현장명 · 평형 · 서비스 · 작업일]" })).join("")}
     </div>
@@ -391,7 +391,7 @@ function reviews() {
 </section>
 <section class="sec sec-line">
   <div class="wrap two-col">
-    <div><h2 class="h-serif">고객후기</h2><p>별점, 사진, 지역, 평형, 작업일을 함께 공개합니다.</p></div>
+    <div><h2 class="h-title">고객후기</h2><p>별점, 사진, 지역, 평형, 작업일을 함께 공개합니다.</p></div>
     <div class="rv-quiet">
       <p class="todo-block">첫 후기를 준비하고 있습니다.<br><small>[여기에 넣을 자료] 고객 동의를 받은 후기 · 별점 · 현장 사진</small></p>
       <p>외부 후기 · <span class="todo">네이버 플레이스 리뷰 링크</span> · <span class="todo">숨고·당근 후기 링크</span></p>
@@ -400,7 +400,7 @@ function reviews() {
 </section>
 <section class="sheet-sec">
   <div class="wrap sheet-in">
-    <div class="sheet-copy"><h2 class="h-serif">모든 현장에서<br>쓰는 검수표</h2><p>청소가 끝나면 팀장과 고객님이 이 표를 함께 대조하고, 모든 칸을 확인한 뒤 마감합니다.</p></div>
+    <div class="sheet-copy"><h2 class="h-title">모든 현장에서<br>쓰는 검수표</h2><p>청소가 끝나면 팀장과 고객님이 이 표를 함께 대조하고, 모든 칸을 확인한 뒤 마감합니다.</p></div>
     ${sheet(inspection)}
   </div>
 </section>
@@ -421,13 +421,13 @@ function faqPageView() {
 <section class="page-head">
   <div class="wrap">
     ${crumbNav([["자주 묻는 질문", p]])}
-    <h1 class="h-serif ph-title">자주 묻는 질문</h1>
+    <h1 class="h-title ph-title">자주 묻는 질문</h1>
   </div>
 </section>
 <section class="sec">
   <div class="wrap">
-    <div class="two-col faq-group"><h2 class="h-serif">공통</h2>${faqList(faqs(cfg))}</div>
-    ${services.map((s) => `<div class="two-col faq-group"><h2 class="h-serif">${s.name}</h2>${faqList(s.faqs)}</div>`).join("")}
+    <div class="two-col faq-group"><h2 class="h-title">공통</h2>${faqList(faqs(cfg))}</div>
+    ${services.map((s) => `<div class="two-col faq-group"><h2 class="h-title">${s.name}</h2>${faqList(s.faqs)}</div>`).join("")}
   </div>
 </section>
 ${ctaBand("찾는 답이 없으면<br>바로 물어보세요")}`,
@@ -448,26 +448,26 @@ function about() {
   <div class="wrap">
     ${crumbNav([["회사소개", p]])}
     <p class="kicker">${v(cfg.subName)}</p>
-    <h1 class="h-serif ph-title">${v(cfg.name)}</h1>
+    <h1 class="h-title ph-title">${v(cfg.name)}</h1>
     <p class="ph-lead">청소는 끝나기 전까지 결과를 볼 수 없는 서비스입니다. 그래서 저희는 결과를 약속하기 전에 과정을 먼저 보여드립니다.</p>
   </div>
   <div class="wrap"><div class="slot slot-hero"><span>대표 또는 작업팀 실제 사진 자리</span></div></div>
 </section>
 <section class="sec">
   <div class="wrap two-col">
-    <div><h2 class="h-serif">대표 인사말</h2></div>
+    <div><h2 class="h-title">대표 인사말</h2></div>
     <p class="todo-block">[TODO] 대표님이 직접 쓰시는 3~5문장: 이 일을 시작한 이유, 직영팀을 고집하는 이유, 하지 않는 것.</p>
   </div>
 </section>
 <section class="sec sec-line">
   <div class="wrap two-col">
-    <div><h2 class="h-serif">지키는 약속</h2></div>
+    <div><h2 class="h-title">지키는 약속</h2></div>
     <dl class="promise-list">${promises(cfg).map((x) => `<div><dt>${v(x.title)}</dt><dd>${v(x.body)}</dd></div>`).join("")}</dl>
   </div>
 </section>
 <section class="sec sec-line">
   <div class="wrap two-col">
-    <div><h2 class="h-serif">업체 정보</h2></div>
+    <div><h2 class="h-title">업체 정보</h2></div>
     <dl class="info">
       <div><dt>상호</dt><dd>${v(cfg.name)} (${v(cfg.subName)})</dd></div>
       <div><dt>대표자</dt><dd>${v(c.owner)}</dd></div>
@@ -493,7 +493,7 @@ function notFound() {
     description: "요청하신 페이지가 없습니다.",
     noindex: true,
     body: `<section class="page-head"><div class="wrap">
-  <h1 class="h-serif ph-title">페이지를 찾을 수 없어요</h1>
+  <h1 class="h-title ph-title">페이지를 찾을 수 없어요</h1>
   <p class="ph-lead">주소가 바뀌었거나 없는 페이지예요.</p>
   <div class="cta-row"><a class="btn" href="${u("/")}">홈으로</a><a class="btn btn-ghost" href="${u("/quote/")}">견적 문의</a></div>
 </div></section>`,
