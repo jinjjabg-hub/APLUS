@@ -8,9 +8,12 @@
 3. **배포하기**: main 브랜치에 올라가면 GitHub Actions가 자동으로 점검하고 https://jinjjabg-hub.github.io/APLUS/ 에 배포합니다. 다른 곳에 올리려면 `npm run build`로 생긴 `dist/` 폴더를 https://app.netlify.com/drop 에 끌어다 놓으면 됩니다.
 
 ## 디자인 기준
-- 첫 화면 전체를 영상으로 채우고, 그 위에 명조체 제목 한 줄만 둡니다.
+- 첫 화면 전체를 영상으로 채우고, 그 위에 굵은 제목 한 줄만 둡니다.
 - 카드 나열 대신 큰 글씨 목록, 실제 종이 검수표, 전후 비교 슬라이더, 큰 숫자 요금으로 구성했습니다.
-- 글꼴: 제목 Noto Serif KR(명조), 본문 Pretendard(사이트에 직접 포함, WOFF2)
+- 글꼴: 제목 **페이퍼로지**, 본문 **프리텐다드**. 둘 다 SIL OFL 1.1(무료·상업용·웹 사용 가능), 라이선스 전문은 `fonts-src/OFL.txt`
+  - 자주 쓰는 한글 2,350자와 사이트에 쓰인 글자만 남겨 용량을 줄였습니다(굵기 하나당 약 110~175KB).
+  - 문구를 많이 바꿨다면 `npm run fonts`로 글꼴을 다시 만드세요(Python `pip install fonttools brotli` 필요).
+  - 비트로(코어·프라이드)는 라이선스상 웹사이트 탑재(임베딩)와 브랜드·로고 사용이 금지되어 쓰지 않았습니다.
 - 색: 짙은 녹흑 #0B1513, 청록 #0F6B62, 금색 포인트 #D99A2B, 카카오 노랑
 - 시안 속 AI 생성 사진과 확인되지 않은 인증 문구는 쓰지 않았습니다(`TODO.md` C항목).
 
@@ -40,6 +43,7 @@ scripts/            build(빌드) · check(링크·용량 점검) · serve(미�
 | `npm run preview` | `preview/` 생성 (더블클릭으로 열 수 있는 버전) |
 | `npm run serve` | 빌드 후 http://localhost:4000 에서 미리보기 |
 | `npm run check` | 빌드 후 깨진 링크 점검 + 페이지 용량 측정 |
+| `npm run fonts` | 원본 글꼴(`fonts-src/`)에서 웹용 글꼴을 다시 만들기 |
 | `npm run og` | 업체명·지역을 바꾼 뒤 공유 이미지(og.jpg)를 다시 생성 (Playwright 필요) |
 
 ## 자동견적 앱 연결

@@ -90,9 +90,8 @@ ${ver.google ? `<meta name="google-site-verification" content="${esc(ver.google)
 <meta name="twitter:card" content="summary_large_image">
 <meta name="theme-color" content="#0b1513">
 <link rel="icon" href="${u("/assets/favicon.svg")}" type="image/svg+xml">
-<link rel="stylesheet" href="${u("/assets/fonts/pretendard/pretendardvariable-dynamic-subset.css")}">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@500;700&display=swap">
+<link rel="preload" href="${u("/assets/fonts/pretendard/Pretendard-Regular.woff2")}" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="${u("/assets/fonts/paperlogy/Paperlogy-7Bold.woff2")}" as="font" type="font/woff2" crossorigin>
 <link rel="stylesheet" href="${u("/assets/style.css")}">
 ${ld}
 </head>`;
@@ -296,7 +295,7 @@ export function baSlider({ before = "", after = "", caption = "[TODO:현장명 �
 export function ctaBand(title = "사진 한 장이면 견적이 빨라져요") {
   return `<section class="cta-band">
   <div class="wrap cta-in">
-    <h2 class="h-serif">${title}</h2>
+    <h2 class="h-title">${title}</h2>
     <p>창틀이나 주방 사진을 카톡으로 보내 주시면, 추가금 없는 견적과 가능한 날짜를 안내드립니다.</p>
     <div class="cta-row">
       <a class="btn btn-kakao" href="${esc(site.kakao)}" target="_blank" rel="noopener">${icon.chat} 카톡으로 사진 보내기</a>
