@@ -11,20 +11,34 @@
     });
   });
 
-  // 영상 위 헤더: 스크롤하면 흰 배경으로
-  var hdr = document.querySelector(".site-header.is-overlay");
-  if (hdr) {
-    var onScroll = function () {
-      var past = window.scrollY > window.innerHeight * 0.6;
-      hdr.classList.toggle("scrolled", past);
-      document.body.classList.toggle("at-hero", !past); // PC: 첫 화면에서는 퀵메뉴 대신 헤더 버튼 사용
+  // 첫 화면 평면도: 구역 단추나 방을 누르면 그 구역의 작업 항목을 보여 줍니다.
+  var fp = document.querySelector(".fp");
+  if (fp) {
+    var zTabs = fp.querySelectorAll("[data-zt]"), zLists = fp.querySelectorAll("[data-zl]"), zRooms = fp.querySelectorAll(".rm");
+    var zonePick = function (z) {
+      zTabs.forEach(function (t) { t.setAttribute("aria-selected", t.dataset.zt === z ? "true" : "false"); });
+      zLists.forEach(function (l) { l.hidden = l.dataset.zl !== z; });
+      zRooms.forEach(function (r) { r.classList.toggle("on", r.dataset.z === z); });
     };
-    onScroll();
-    window.addEventListener("scroll", onScroll, { passive: true });
+    zTabs.forEach(function (t) { t.addEventListener("click", function () { zonePick(t.dataset.zt); }); });
+    zRooms.forEach(function (r) { r.addEventListener("click", function () { zonePick(r.dataset.z); }); });
   }
 
-  // 움직임 줄이기 설정이면 배경 영상 멈춤
-  var vid = document.querySelector(".hv-video");
+  // 하단 빠른 견적(PC): 서비스와 평수를 고르면 예상 금액과 견적 링크가 바뀝니다.
+  var qb = document.querySelector(".qbar");
+  if (qb) {
+    var qbSvc = qb.querySelector("[data-qb-svc]"), qbPy = qb.querySelector("[data-qb-py]"), qbLink = qb.querySelector("[data-qb-link]");
+    var qbUpd = function () {
+      var n = Math.max(1, Math.min(300, parseInt(qbPy.value, 10) || 0));
+      qb.querySelector("[data-qb-sum]").textContent = (n * +qb.dataset.rate).toLocaleString("ko-KR");
+      qbLink.href = qbLink.href.replace(/service=[^&]*/, "service=" + qbSvc.value).replace(/py=\d+/, "py=" + n);
+    };
+    qbSvc.addEventListener("change", qbUpd);
+    qbPy.addEventListener("input", qbUpd);
+  }
+
+  // 움직임 줄이기 설정이면 현장 영상 멈춤
+  var vid = document.querySelector(".site-video");
   if (vid && window.matchMedia("(prefers-reduced-motion: reduce)").matches) { vid.removeAttribute("autoplay"); vid.pause(); }
 
   // 전후 비교 슬라이더

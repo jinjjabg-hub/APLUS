@@ -88,7 +88,7 @@ ${ver.google ? `<meta name="google-site-verification" content="${esc(ver.google)
 <meta property="og:image:height" content="630">
 <meta property="og:image:alt" content="${esc(site.name + " · " + site.region + " 입주청소·이사청소")}">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="theme-color" content="#0b1513">
+<meta name="theme-color" content="#f3f6f5">
 <link rel="icon" href="${u("/assets/favicon.svg")}" type="image/svg+xml">
 <link rel="preload" href="${u("/assets/fonts/pretendard/Pretendard-Regular.woff2")}" as="font" type="font/woff2" crossorigin>
 <link rel="preload" href="${u("/assets/fonts/paperlogy/Paperlogy-7Bold.woff2")}" as="font" type="font/woff2" crossorigin>
@@ -100,7 +100,7 @@ ${ld}
 // ── 헤더 / 푸터 / 퀵메뉴 ───────────────────────────────────
 const brand = () => `<a class="brand" href="${u("/")}">${icon.logo}<span><b>${v(cfg.name)}</b><small>${v(cfg.subName)}</small></span></a>`;
 
-export function header({ overlay = false } = {}) {
+export function header() {
   const nav = [
     ["/#services", "서비스"],
     ["/#price", "요금"],
@@ -111,7 +111,7 @@ export function header({ overlay = false } = {}) {
   return `<body>
 ${cfg.draft ? `<div class="draft-bar">시안입니다 · <span class="todo">노란 표시</span>는 실제 정보로 바뀔 자리예요</div>` : ""}
 <a class="skip" href="#main">본문 바로가기</a>
-<header class="site-header${overlay ? " is-overlay" : ""}">
+<header class="site-header">
   <div class="wrap header-in">
     ${brand()}
     <nav class="nav" aria-label="주요 메뉴">
@@ -136,11 +136,23 @@ ${cfg.draft ? `<div class="draft-bar">시안입니다 · <span class="todo">노�
 }
 
 export function quickMenu() {
+  const per = services.filter((s) => ["move-in", "move-out"].includes(s.slug));
+  const py = 34;
   return `<nav class="quick" aria-label="빠른 문의">
   <a href="${site.tel}" class="q-call">${icon.phone}<span>전화</span></a>
   <a href="${esc(site.kakao)}" class="q-kakao" target="_blank" rel="noopener">${icon.chat}<span>카톡</span></a>
   <a href="${u("/quote/")}" class="q-quote">${icon.doc}<span>견적</span></a>
-</nav>`;
+</nav>
+<div class="qbar" data-rate="${cfg.pricePerPyeong}">
+  <div class="wrap qbar-in">
+    <b class="qbar-t">빠른 견적</b>
+    <label class="qbar-f"><span>서비스</span><select data-qb-svc>${per.map((s) => `<option value="${s.slug}">${s.name}</option>`).join("")}</select></label>
+    <label class="qbar-f"><span>공급 평수</span><input data-qb-py type="number" min="10" max="150" value="${py}" inputmode="numeric"><i>평</i></label>
+    <p class="qbar-sum" aria-live="polite">예상 <b data-qb-sum>${(py * cfg.pricePerPyeong).toLocaleString("ko-KR")}</b>원부터</p>
+    <a class="btn btn-kakao" data-qb-link href="${u(`/quote/?service=${per[0].slug}&py=${py}`)}">이 조건으로 견적 받기 ${icon.arrow}</a>
+    <a class="qbar-tel" href="${site.tel}">${icon.phone} ${v(cfg.phone)}</a>
+  </div>
+</div>`;
 }
 
 export function footer() {

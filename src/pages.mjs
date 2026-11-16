@@ -135,53 +135,118 @@ const priceBlock = () => `<section class="price" id="price">
   </div>
 </section>`;
 
+// 첫 화면 평면도: 84㎡ 예시 평면. 방을 누르면 그 구역의 작업 항목이 보입니다.
+// 구역과 항목은 content.mjs 입주청소(zones)에서 그대로 가져옵니다.
+const planRooms = [
+  // [구역 이름, 방 이름, x, y, 너비, 높이, 먼지 걷히는 순서]
+  ["창문·창틀", "발코니", 20, 20, 520, 40, 0],
+  ["거실·침실", "안방", 20, 60, 160, 150, 1],
+  ["거실·침실", "거실", 180, 60, 220, 150, 2],
+  ["거실·침실", "침실 2", 400, 60, 140, 150, 3],
+  ["붙박이장·드레스룸", "드레스룸", 20, 210, 80, 80, 4],
+  ["욕실", "욕실", 100, 210, 80, 80, 5],
+  ["거실·침실", "침실 3", 20, 290, 160, 70, 6],
+  ["주방", "주방", 180, 210, 150, 150, 7],
+  ["거실·침실", "", 330, 210, 210, 40, 8],
+  ["욕실", "욕실", 330, 250, 90, 110, 9],
+  ["현관·신발장", "현관", 420, 250, 120, 110, 10],
+];
+function floorPlan() {
+  const zones = services[0].zones;
+  const zi = (name) => zones.findIndex(([z]) => z === name);
+  const total = zones.reduce((n, [, items]) => n + items.length, 0);
+  const first = zi("주방");
+  const rooms = planRooms
+    .map(([z, label, x, y, w, h, d]) => `<g class="rm${zi(z) === first ? " on" : ""}" data-z="${zi(z)}" style="--d:${d}">
+      <rect class="rm-f" x="${x}" y="${y}" width="${w}" height="${h}"/>
+      <rect class="rm-dust" x="${x}" y="${y}" width="${w}" height="${h}" fill="url(#fp-dust)"/>
+      ${label ? `<text x="${x + w / 2}" y="${y + h / 2 + 5}" text-anchor="middle">${label}</text>` : ""}
+    </g>`)
+    .join("");
+  return `<div class="fp">
+  <div class="fp-draw">
+    <svg viewBox="0 0 560 380" role="img" aria-label="84㎡ 아파트 예시 평면도. 구역별 작업 항목은 아래 목록에 있습니다.">
+      <defs><pattern id="fp-dust" width="7" height="7" patternUnits="userSpaceOnUse"><circle cx="1.5" cy="2" r=".9"/><circle cx="5" cy="5.5" r=".7"/></pattern></defs>
+      ${rooms}
+      <g class="fp-wall" aria-hidden="true">
+        <rect x="20" y="20" width="520" height="340"/>
+        <path d="M20 26h520M70 20v6M200 20v6M330 20v6M460 20v6"/>
+        <path d="M150 210a30 30 0 0 0-30-30M400 180a30 30 0 0 1 30 30M150 290a26 26 0 0 0-26 26M420 300a26 26 0 0 0-26-26M510 360a30 30 0 0 0-30-30"/>
+      </g>
+    </svg>
+    <p class="fp-cap">84㎡(공급 34평형) 예시 평면 · 방을 누르면 작업 항목이 보입니다</p>
+  </div>
+  <div class="fp-panel">
+    <p class="fp-count">입주청소 <b>${zones.length}개 구역 ${total}곳</b></p>
+    <div class="fp-tabs" role="tablist" aria-label="구역 선택">
+      ${zones.map(([z], i) => `<button type="button" role="tab" id="fp-t${i}" aria-controls="fp-l${i}" aria-selected="${i === first}" data-zt="${i}">${z}</button>`).join("")}
+    </div>
+    ${zones.map(([z, items], i) => `<ul class="fp-list" id="fp-l${i}" role="tabpanel" aria-labelledby="fp-t${i}" data-zl="${i}"${i === first ? "" : " hidden"}>${items.map((it) => `<li>${v(it)}</li>`).join("")}</ul>`).join("")}
+  </div>
+</div>`;
+}
+
+// 흔한 방식과 비교 (입주청소 compare 데이터)
+const compareTable = () => {
+  const c = services[0].compare;
+  return `<div class="cmp-scroll"><table class="cmp">
+  <thead><tr><th scope="col">흔히 겪는 청소</th><th scope="col">${v(cfg.name)}가 하는 방식</th></tr></thead>
+  <tbody>${c.bad.map(([bt, bd], i) => `<tr><td><b>${bt}</b>${bd}</td><td><b>${c.good[i][0]}</b>${c.good[i][1]}</td></tr>`).join("")}</tbody>
+</table></div>`;
+};
+
 // ── 1. 메인 ─────────────────────────────────────────────────
 function home() {
   const title = `${R} 입주청소·이사청소 | ${site.name}`;
   const description = `${R} 입주청소·이사청소·준공청소·상가 정기청소·탄성코트·줄눈·새집증후군 케어. ${txt(cfg.priceBasis)} ${perPyeong}, 직영팀 시공, 고객 동행 검수, ${txt(cfg.hours)} 상담.`;
   const hv = cfg.heroVideo;
   const vDesk = asset(hv.desktop), vMob = asset(hv.mobile), poster = asset(hv.poster);
+  // 현장 영상: 파일이 있을 때만 "작업 전과 후" 위에 보입니다.
   const video = vDesk
-    ? `<video class="hv-video" autoplay muted loop playsinline preload="auto"${poster ? ` poster="${u(poster)}"` : ""} aria-hidden="true">
+    ? `<video class="site-video" autoplay muted loop playsinline preload="metadata"${poster ? ` poster="${u(poster)}"` : ""} aria-label="실제 현장 작업 영상">
       ${vMob ? `<source src="${u(vMob)}" type="video/mp4" media="(max-width: 720px)">` : ""}
       <source src="${u(vDesk)}" type="video/mp4">
     </video>`
-    : `${cfg.draft ? `<span class="hv-slot">대표 영상 자리 · src/assets/hero.mp4</span>` : ""}`;
+    : "";
   const body = `
-<section class="hero-v">
-  <div class="hv-bg" aria-hidden="true"></div>
-  ${video}
-  <div class="hv-shade" aria-hidden="true"></div>
-  <div class="wrap hv-in">
-    <p class="hv-kicker">${R} 입주청소 · 이사청소</p>
-    <h1 class="hv-title">새 집의<br>첫 공기까지</h1>
-    <p class="hv-lead">${v(cfg.intro)}</p>
-    <div class="hv-actions">
-      <a class="btn btn-light" href="#quote">무료 견적 받기 ${icon.arrow}</a>
-      <a class="hv-tel" href="${site.tel}">${icon.phone} ${v(cfg.phone)}</a>
+<section class="hero">
+  <div class="wrap hero-in">
+    <div class="hero-copy">
+      <p class="hero-kicker">${R} 입주청소 · 이사청소</p>
+      <h1 class="hero-title">서랍을 빼야 보이는<br><span>먼지까지 닦습니다</span></h1>
+      <p class="hero-lead">${v(cfg.intro)}</p>
+      <div class="hero-actions">
+        <a class="btn" href="#quote">무료 견적 받기 ${icon.arrow}</a>
+        <a class="hero-tel" href="${site.tel}">${icon.phone} ${v(cfg.phone)}</a>
+      </div>
     </div>
+    ${floorPlan()}
   </div>
-  <div class="wrap hv-foot">
-    <span>${perPyeong} <em>${v(cfg.priceBasis)}</em></span>
-    <span>${v(cfg.hours)}</span>
-    <a href="#about" class="hv-scroll">스크롤</a>
+  <div class="wrap">
+    <dl class="facts">
+      <div><dt>요금</dt><dd>${perPyeong}<small>${v(cfg.priceBasis)}</small></dd></div>
+      <div><dt>상담</dt><dd>${v(cfg.hours)}</dd></div>
+      <div><dt>지역</dt><dd>${cfg.region.areas.map((a) => (a.parts.length > 6 ? `${a.name} 전 지역` : a.parts.map((p) => p.replace(/시$/, "")).join("·"))).join(" · ")}</dd></div>
+      <div><dt>결제</dt><dd>함께 검수한 뒤 결제</dd></div>
+    </dl>
   </div>
 </section>
 
 <section class="manifesto" id="about">
   <div class="wrap">
-    <p class="m-big">청소는 끝나기 전까지<br>결과를 볼 수 없습니다.<br><span>그래서 과정을 먼저 보여드립니다.</span></p>
+    <h2 class="m-big">청소는 끝나기 전까지 결과를 볼 수 없습니다.<br><span>그래서 과정을 먼저 보여드립니다.</span></h2>
     <dl class="m-facts">
       <div><dt>직영팀</dt><dd>외부 용역에 넘기지 않습니다. 교육받은 본사 소속 팀장이 현장을 책임집니다.</dd></div>
       <div><dt>동행 검수</dt><dd>끝나기 30분 전 연락드리고, 검수표를 함께 대조합니다. 미흡한 곳은 그 자리에서 다시 합니다.</dd></div>
       <div><dt>추가금 없음</dt><dd>미리 알려드린 금액 외에 현장에서 임의로 더 받지 않습니다.</dd></div>
     </dl>
+    ${compareTable()}
   </div>
 </section>
 
 <section class="sec" id="services">
   <div class="wrap">
-    <div class="sec-top"><h2 class="h-title">맡기실 공간을<br>골라 주세요</h2><p>공간마다 장비와 세제가 다릅니다. 순서와 검수 기준은 같습니다.</p></div>
+    <div class="sec-top"><h2 class="h-title">맡기실 공간을 골라 주세요</h2><p>공간마다 장비와 세제가 다릅니다. 순서와 검수 기준은 같습니다.</p></div>
     ${serviceIndex()}
   </div>
 </section>
@@ -189,7 +254,7 @@ function home() {
 <section class="sheet-sec">
   <div class="wrap sheet-in">
     <div class="sheet-copy">
-      <h2 class="h-title">끝은<br>검수표로 정합니다</h2>
+      <h2 class="h-title">끝은 검수표로 정합니다</h2>
       <p>청소가 끝나면 팀장과 고객님이 이 표를 한 줄씩 대조합니다. 모든 칸이 채워져야 작업이 끝나고, 그다음에 결제합니다.</p>
       <p class="muted">담당 팀장이 바뀌어도 이 표는 바뀌지 않습니다.</p>
       <ul class="equip">${equipment.map(([t, d]) => `<li><b>${t}</b> ${v(d)}</li>`).join("")}</ul>
@@ -201,7 +266,11 @@ function home() {
 <section class="sec">
   <div class="wrap">
     <div class="sec-top"><h2 class="h-title">작업 전과 후</h2><p>실제 현장 사진만 올립니다. 가운데 선을 밀어 비교해 보세요.</p></div>
-    ${baSlider({ caption: "[TODO:해운대 OO아파트 34평 · 주방 하부장 걸레받이]" })}
+    ${video}
+    <div class="ba-pair">
+      ${baSlider({ caption: "[TODO:해운대 OO아파트 34평 · 주방 하부장 걸레받이]" })}
+      ${baSlider({ caption: "[TODO:현장명 · 평형 · 작업 부위]" })}
+    </div>
   </div>
 </section>
 
@@ -234,14 +303,14 @@ ${priceBlock()}
 <section class="quote-sec" id="quote">
   <div class="wrap quote-in">
     <div class="quote-copy">
-      <h2 class="h-title">견적은<br>1분이면 됩니다</h2>
+      <h2 class="h-title">견적은 1분이면 됩니다</h2>
       <p>서비스, 공간, 날짜, 연락처만 골라 주세요. 입주·이사청소는 평수를 넣는 순간 예상 금액이 보입니다.</p>
       <p class="quote-direct">바로 상담<br><a href="${site.tel}">${v(cfg.phone)}</a><br><small>${v(cfg.hours)}</small></p>
     </div>
     ${quoteBlock()}
   </div>
 </section>`;
-  return { path: "/", title, description, body, overlay: true, jsonld: [localBusiness(), faqPage(faqs(cfg))] };
+  return { path: "/", title, description, body, jsonld: [localBusiness(), faqPage(faqs(cfg))] };
 }
 
 // ── 2. 서비스 상세 ─────────────────────────────────────────
